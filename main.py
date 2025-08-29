@@ -3,11 +3,24 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 
 
-load_dotenv()
 
-url: str = os.environ.get("SUPABASE_URL")
-key: str = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(url, key)
-res = supabase.table("movies").select("*").execute()
-print(res.data)
+def get_client() -> Client:
+    load_dotenv()
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_KEY")
+    if not url or not key:
+        raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY in .env")
+    return create_client(url, key)
 
+def main():
+    supabase = get_client()
+
+    try:
+        res = supabase.table("movies").select("*").execute()
+        print(res.dat)
+    except Exception as e:
+        print(f'error: {e}')
+
+if __name__ ==  "__main__":
+    main()     
+    
