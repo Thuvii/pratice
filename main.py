@@ -17,7 +17,7 @@ def main():
 
     try:
         res = supabase.table("movies").select("*").execute()
-        print(res.dat)
+        print(res.data)
     except Exception as e:
         print(f'error: {e}')
 
