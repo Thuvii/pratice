@@ -29,10 +29,17 @@ def searchMovie(imdb = None, year = None):
 
 
 def main():
-
     st.title("Movie Finder")
-  
-    year = st.number_input("Year",min_value=1932, max_value=2100, step=1)
+    st.subheader('Minh Hoang Bui')
+    
+    all_movies = getMovies()
+    ratings = [m["rating"] for m in all_movies if m.get("rating") is not None]
+    rating_counts = pd.Series(ratings).value_counts().sort_index()
+    st.subheader("Number of Movies by Rating")
+    st.bar_chart(rating_counts)
+
+   
+    year = st.number_input("Year",min_value=2011, max_value=2100, step=1)
     imdb = st.slider("Minimum IMDB rating", 0.0, 10.0, 5.0)
     sort_by = st.selectbox("Sort by", ["Title", "Rating"])
     sort_ascending = st.checkbox("Sort ascending", value=True)
@@ -42,14 +49,7 @@ def main():
         res = searchMovie(imdb,year)
         
         if res:
-            ratings = [m["rating"] for m in res if m.get("rating") is not None]
-            hist_values, bins = np.histogram(ratings, bins=10, range=(0.0, 10.0))
-            bin_centers = 0.5 * (bins[:-1] + bins[1:])
-            hist_df = pd.DataFrame({
-                "Rating": bin_centers,
-                "Number of Movies": hist_values
-            })
-            st.bar_chart(hist_df.set_index("Rating"))
+            
             st.header(f"Found {len(res)} movies!")
             if sort_by == "Title":
                 sorted_res = sorted(res, key=lambda x: x.get('title', ''), reverse=not sort_ascending)

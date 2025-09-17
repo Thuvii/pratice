@@ -50,7 +50,21 @@ def main():
 
     st.subheader("Map of all pickups at %s:00" % hour_to_filter)
     st.map(filtered_data)
-
+    
+    st.subheader("Number of pickups by day of week")
+    pickups_by_day = data[DATE_COLUMN].dt.day_name().value_counts()
+    st.line_chart(pickups_by_day)
+    
+    st.subheader("Number of pickup by minutes")
+    pickups_by_min = np.histogram(data[DATE_COLUMN].dt.minute, bins=60, range=(0,60))[0]
+    st.bar_chart(pickups_by_min)
+    
+    day_to_filter = st.selectbox("Select a day", data[DATE_COLUMN].dt.day_name().unique())
+    filter_data_day = data[data[DATE_COLUMN].dt.day_name() == day_to_filter]
+    st.map(filter_data_day[data[DATE_COLUMN].dt.hour==hour_to_filter])
+    
+ 
+   
 
 if __name__ == "__main__":
     main()
